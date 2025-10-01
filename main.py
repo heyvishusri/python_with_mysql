@@ -64,6 +64,14 @@ class DBHelper:
         self.con.commit()
         print("user deleted successfully🥺")
 
+    # update records
+    def update_user_by_id(self, userId, newName):
+        query = "update user set username='{}' where userId={}".format(newName, userId)
+        cur = self.con.cursor()
+        cur.execute(query)
+        self.con.commit()
+        print("user updated successfully😎")
+
 
 # main code
 helper = DBHelper()
@@ -77,3 +85,5 @@ helper = DBHelper()
 # helper.fetch_user_by_id(3)
 # delete user by id
 # helper.delete_user_by_id(4)
+# update user by id
+helper.update_user_by_id(5, "Vishal")
