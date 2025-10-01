@@ -1,0 +1,124 @@
+Project: Python MySQL User Management (CLI)
+Format: short, direct answers for interview prep.
+
+1. What is the purpose of this project?
+A simple CLI app to perform CRUD operations on a MySQL-backed user table for learning/demo purposes.
+
+2. How does the CLI flow in main.py work?
+main.py loops a text menu, reads user input, and calls DBHelper methods to insert, fetch, update, or delete users.
+
+3. Which Python packages are required?
+Python 3.8+, and mysql-connector-python (install with pip install mysql-connector-python).
+
+4. How is the database connection configured?
+Connection parameters (host, port, user, password, database) are set directly in DBHelper.__init__ and used with mysql.connector.connect().
+
+5. Explain the user table schema.
+user(userId INT AUTO_INCREMENT PRIMARY KEY, userName VARCHAR(200), phoneNumber VARCHAR(15), email VARCHAR(200), password VARCHAR(20)).
+
+6. How to add created_at and updated_at timestamps?
+Add TIMESTAMP columns with defaults: created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP.
+
+7. How to change DB credentials without editing source?
+Use environment variables (os.getenv) or a config file and load values in DBHelper.__init__.
+
+8. How are SQL statements built now?
+They are built with Python string formatting (format / f-strings) interpolating values directly into SQL strings.
+
+9. Why is that risky?
+Direct interpolation allows SQL injection and data-escaping bugs; also breaks with quotes and special chars.
+
+10. How to use parameterized queries (brief example)?
+Use placeholders and pass parameters to execute, e.g.:
+cur.execute("INSERT INTO user(userName, phoneNumber, email, password) VALUES (%s,%s,%s,%s)", (name, phone, email, pwd))
+
+11. How to add pagination to fetch_all?
+Use LIMIT and OFFSET, e.g. SELECT * FROM user LIMIT %s OFFSET %s and pass page_size and (page-1)*page_size as params.
+
+12. What is SQL injection and is this project vulnerable?
+SQL injection is malicious input altering SQL; yes, current string formatting makes it vulnerable.
+
+13. How should passwords be stored?
+Never plaintext: store salted hashes (bcrypt/argon2). Use a proven library like passlib or bcrypt.
+
+14. How to avoid storing DB creds in repo?
+Use environment variables, a .env file excluded from VCS, or a secrets manager.
+
+15. When to use transactions here?
+Use transactions when multiple related DB operations must succeed or fail together (multi-step updates/deletes).
+
+16. How to improve error handling?
+Catch specific DB exceptions, log errors, rollback on failure, and re-raise or return clear error codes/messages.
+
+17. How to ensure rollback on failures?
+Wrap operations in try/except; call con.rollback() in except, then con.commit() on success.
+
+18. When to close cursors/connections?
+Close cursors after use and close the connection when the app exits; better to use context managers if supported.
+
+19. How to add connection pooling?
+Use mysql.connector.pooling.MySQLConnectionPool or a library like SQLAlchemy connection pooling.
+
+20. Performance implications of committing often?
+Frequent commits reduce throughput; batch operations and single-transaction commits are faster for many writes.
+
+21. Naming and style improvements?
+Use snake_case for variables/methods, lower-case instance names (db not Db), and follow PEP8; add docstrings.
+
+22. How to refactor DBHelper for testability?
+Inject the connection or a connection factory; separate SQL building from execution; keep side effects isolated.
+
+23. How to separate concerns?
+Move CLI logic to a separate module, DB access to DBHelper, and define a User model or dataclass for data transfer.
+
+24. How to unit test DBHelper without MySQL?
+Mock the connection and cursor (unittest.mock) or use sqlite in-memory for simple tests.
+
+25. How to use fixtures/mocks for DB tests?
+Provide a mock connection object with execute/fetch behavior or pytest fixtures that return a prepared test DB or mocks.
+
+26. What integration tests to add?
+Tests that run against a disposable MySQL instance (Docker) validating full CRUD and edge cases.
+
+27. How to containerize with Docker?
+Create Dockerfile for app and docker-compose.yml to run app alongside a mysql service; use environment variables for creds.
+
+28. Which env vars for production?
+DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, and APP_ENV/LOG_LEVEL.
+
+29. How to add input validation?
+Validate formats (email, phone), required fields, length limits, and reject invalid input before DB calls.
+
+30. Proposed REST endpoints for the same functionality?
+POST /users, GET /users (with pagination), GET /users/{id}, PUT /users/{id}, DELETE /users/{id}.
+
+31. How to add logging?
+Use Python logging module, set levels (DEBUG, INFO, WARNING, ERROR), and log DB errors and user actions (avoid logging secrets).
+
+32. Find bugs or risky patterns in code?
+- SQL string formatting (SQL injection).
+- Hardcoded DB credentials.
+- Passwords stored plaintext.
+- Cursor/connection not closed explicitly.
+- No input validation or specific exception handling.
+
+33. Concrete fixes for those issues?
+- Use parameterized queries.
+- Read credentials from env vars.
+- Hash passwords before storing.
+- Use context managers or explicit close() for cursors.
+- Catch specific exceptions and rollback on errors.
+
+34. What to add to README/LICENSE for production readiness?
+Add security notes, setup with env vars, run/testing instructions, contribution guidelines, and a clear license file (MIT is fine).
+
+35. How to version-control DB schema changes?
+Use migration tools like Alembic or Flyway, or store SQL migration scripts and apply them reliably.
+
+36. How to support multiple DBs (SQLite for tests)?
+Abstract the DB layer behind a repository interface and implement adapters for MySQL and SQLite; use environment to pick adapter.
+
+37. GDPR/PII considerations?
+Minimize stored personal data, hash personal identifiers where possible, add retention rules, document data processing, and secure backups/transit.
+
+Usage tip: prepare short demo code snippets for parameterized queries, password hashing, and a docker-compose test setup to show you can implement these best practices quickly.
