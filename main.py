@@ -56,6 +56,14 @@ class DBHelper:
             print("====================================")
             print()
 
+    # delete user by id
+    def delete_user_by_id(self, userId):
+        query = "delete from user where userId={}".format(userId)
+        cur = self.con.cursor()
+        cur.execute(query)
+        self.con.commit()
+        print("user deleted successfully🥺")
+
 
 # main code
 helper = DBHelper()
@@ -66,4 +74,6 @@ helper = DBHelper()
 # fetch all users
 # helper.fetch_all()
 # fetch user by id
-helper.fetch_user_by_id(3)
+# helper.fetch_user_by_id(3)
+# delete user by id
+# helper.delete_user_by_id(4)
