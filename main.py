@@ -2,6 +2,7 @@ from dbhelper import DBHelper
 
 
 def main():
+    Db = DBHelper()
     while True:
         print("💻WELCOME TO USER MANAGEMENT SYSTEM💻")
         print("====================================")
@@ -15,20 +16,40 @@ def main():
         print()
         try:
             choice = int(input("ENTER YOUR CHOICE: "))
+            print()
             if choice == 1:
                 # insert user
+                inter_name = input("Enter User Name: ")
+                inter_phone = input("Enter Phone Number: ")
+                inter_email = input("Enter Email: ")
+                inter_password = input("Enter Password: ")
+                Db.insert_user(inter_name, inter_phone, inter_email, inter_password)
                 pass
             elif choice == 2:
                 # fetch all users
+                Db.fetch_all()
                 pass
             elif choice == 3:
                 # fetch user by id
+                inter_id = int(input("Enter User ID to fetch: "))
+                Db.fetch_user_by_id(inter_id)
                 pass
             elif choice == 4:
                 # delete user by id
+                inter_id = int(input("Enter User ID to delete: "))
+                Db.delete_user_by_id(inter_id)
+                print()
                 pass
             elif choice == 5:
                 # update user by id
+                inter_id = int(input("Enter User ID to update: "))
+                inter_name = input("Enter new User Name: ")
+                inter_email = input("Enter new Email: ")
+                inter_phone = input("Enter new Phone Number: ")
+                inter_password = input("Enter new Password: ")
+                Db.update_user_by_id(
+                    inter_id, inter_name, inter_email, inter_phone, inter_password
+                )
                 pass
             elif choice == 6:
                 print("Exiting...👋")
@@ -42,19 +63,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# main code
-helper = DBHelper()
-# insert some users
-# helper.insert_user("Vishwash", "1234567890", "vkumar080@rku.ac.in", "Vishu9931@@@")
-# helper.insert_user("Alok", "1234567820", "akumar111@rku.ac.in", "Vishu9931@@@")
-# helper.insert_user("Ritesh", "1234567820", "akumar111@rku.ac.in", "Vishu9931@@@")
-# fetch all users
-# helper.fetch_all()
-# fetch user by id
-# helper.fetch_user_by_id(3)
-# delete user by id
-# helper.delete_user_by_id(4)
-# update user by id
-helper.update_user_by_id(5, "Vishal")

@@ -65,8 +65,10 @@ class DBHelper:
         print("user deleted successfully🥺")
 
     # update records
-    def update_user_by_id(self, userId, newName):
-        query = "update user set username='{}' where userId={}".format(newName, userId)
+    def update_user_by_id(self, userId, newName, newEmail, newPhone, newPassword):
+        query = "update user set userName='{}', phoneNumber='{}', email='{}', password='{}' where userId={}".format(
+            newName, newPhone, newEmail, newPassword, userId
+        )
         cur = self.con.cursor()
         cur.execute(query)
         self.con.commit()
